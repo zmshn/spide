@@ -18,10 +18,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SlaveNodeManager {
-    public static final int READ_PORT = 10005;
-    public static final int WRITE_PORT = 10006;
-    public static final int TEST_PORT = 10008;
-    public static final int SLAVE_NODE_TEST_PORT = 10007;
+    public static final int READ_PORT = 10002;
+    public static final int WRITE_PORT = 10003;
+    public static final int TEST_PORT = 10004;
+    public static final int SLAVE_NODE_TEST_PORT = 10005;
     private long timeout;
     private ServerSocket  serverSocket = new ServerSocket(READ_PORT);
     private ServerSocket testSocket = new ServerSocket(TEST_PORT);
@@ -33,6 +33,7 @@ public class SlaveNodeManager {
     private List<NodeReply> nodeReplyList = new ArrayList<>();
     private int useingNodeNum = 0;
     private int ipNum = 0;
+    boolean isContinue = true;
 
     public SlaveNodeManager() throws IOException {
         new Thread(()->{
@@ -98,7 +99,7 @@ public class SlaveNodeManager {
     }
 
     private void receiveTest(){
-        for (;;) {
+        while(isContinue) {
             Socket socket = null;
             try {
                 socket = testSocket.accept();
@@ -270,7 +271,7 @@ public class SlaveNodeManager {
     }
 
     public void read(){
-        for (;;){
+        while(isContinue){
             String msg = receive();
             JSONArray array = JSONArray.fromObject(msg);
             JSONObject object = (JSONObject) array.get(0);
@@ -281,7 +282,7 @@ public class SlaveNodeManager {
                 NodeMsg task = tasks.get(i).getMsg();
                 if (task.getMsg().equals(originURL)){
                     nodeMsg = task;
-                    tasks.remove(task);
+                    tasks.remove(i);
                     break;
                 }
             }
@@ -315,7 +316,7 @@ public class SlaveNodeManager {
     }
 
     public void timeoutFind(){
-        for(;;){
+        while(isContinue){
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {

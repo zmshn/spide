@@ -7,8 +7,7 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class SpiderSlaveNode extends SlaveNode {
-    public static final int READ_PORT = 10005;
-    public static final int WRITE_PORT = 10006;
+    public static final int WRITE_PORT = 10003;
 
     public SpiderSlaveNode(int num, String IP) {
         super(num, IP);
